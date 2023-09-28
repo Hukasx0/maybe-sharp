@@ -69,7 +69,7 @@ namespace MaybeSharp {
 
     public static class MaybeExt 
     {
-        // method that works similiar to unwrap() in Rust Language
+        // method that works similiar to unwrap() in Rust Language, but instead of crashing program, it returns empty value
         public static T Unwrap<T>(this Maybe<T> maybe) 
         {
             return maybe.Match(
@@ -84,6 +84,18 @@ namespace MaybeSharp {
             return maybe.Match(
                 some: value => value,
                 none: default_value_function
+            );
+        }
+
+        // method that works like unwrap() in Rust language
+        public static T Unwrap_panic<T>(this Maybe<T> maybe)
+        {
+            return maybe.Match(
+                some: value => value,
+                none: () => { 
+                    Environment.Exit(1);
+                    return default(T);
+                }
             );
         }
     }
