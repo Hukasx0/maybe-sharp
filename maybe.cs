@@ -99,4 +99,71 @@ namespace MaybeSharp {
             );
         }
     }
+
+    public class MaybeErr<T, Err>
+    {
+
+    private readonly T this_value;
+    private readonly Err this_error;
+    private readonly bool is_success;
+    
+    // private constructor
+    private MaybeErr(T val, Err error, bool success)
+    {
+        this_value = val;
+        this_error = error;
+        is_success = success;
+    }
+    
+    public static MaybeErr<T, Err> ok(T value) => new MaybeErr<T, Err>(value, default(Err), true);
+    
+    public static MaybeErr<T, Err> err(Err err) => new MaybeErr<T, Err>(default(T), err, false);
+
+        public TResult Match<TResult>(Func<T, TResult> ok, Func<Err, TResult> err)
+        {
+            if (is_success) 
+            {
+                return ok(this_value);
+            } 
+            else
+            {
+                return err(this_error);
+            }
+        }
+    }
+
+    public static class MaybeErrExt
+    {
+        // method that works similiar to unwrap() in Rust Language, but instead of crashing program, it returns empty value
+        public static T Unwrap<T, Err>(this MaybeErr<T, Err> maybe)
+        {
+            return maybe.Match(
+                ok: value => value,
+                err: error => default(T)
+            );
+        }
+
+        // method that works similiar to unwrap_or() in Rust language
+        public static T Unwrap_or<T, Err>(this MaybeErr<T, Err> maybe, T defaultValue)
+        {
+            return maybe.Match(
+                ok: value => value,
+                err: error => defaultValue
+            );
+        }
+
+        // method that works like unwrap() in Rust language.
+        public static T Unwrap_panic<T, Err>(this MaybeErr<T, Err> maybe)
+        {
+            return maybe.Match(
+                ok: value => value,
+                err: error =>
+                {
+                    Console.WriteLine($"Error: {error}");
+                    Environment.Exit(1);
+                    return default(T);
+                }
+            );
+        }
+    }
 }
