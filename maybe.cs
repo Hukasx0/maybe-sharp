@@ -131,4 +131,39 @@ namespace MaybeSharp {
             }
         }
     }
+
+    public static class MaybeErrExt
+    {
+        // method that works similiar to unwrap() in Rust Language, but instead of crashing program, it returns empty value
+        public static T Unwrap<T, Err>(this MaybeErr<T, Err> maybe)
+        {
+            return maybe.Match(
+                ok: value => value,
+                err: error => default(T)
+            );
+        }
+
+        // method that works similiar to unwrap_or() in Rust language
+        public static T Unwrap_or<T, Err>(this MaybeErr<T, Err> maybe, T defaultValue)
+        {
+            return maybe.Match(
+                ok: value => value,
+                err: error => defaultValue
+            );
+        }
+
+        // method that works like unwrap() in Rust language.
+        public static T Unwrap_panic<T, Err>(this MaybeErr<T, Err> maybe)
+        {
+            return maybe.Match(
+                ok: value => value,
+                err: error =>
+                {
+                    Console.WriteLine($"Error: {error}");
+                    Environment.Exit(1);
+                    return default(T);
+                }
+            );
+        }
+    }
 }
