@@ -25,6 +25,8 @@
 using System;
 using MaybeSharp;
 
+// To test how it works, rename this file to 'main.cs' and copy maybe.cs into the same folder as this file
+
 namespace Program
 {
     class Program

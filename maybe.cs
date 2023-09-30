@@ -22,6 +22,8 @@
     SOFTWARE.
 */
 
+using System;
+
 namespace MaybeSharp {
     // "Maybe" class definition, T means it accepts any type
     public class Maybe<T>
@@ -72,7 +74,7 @@ namespace MaybeSharp {
         // method that works similiar to unwrap() in Rust Language, but instead of crashing program, it returns empty value
         public static T Unwrap<T>(this Maybe<T> maybe) 
         {
-            return maybe.Match(
+            return maybe.Match<T>(
                 some: value => value,
                 none: () => default(T)
             );
@@ -90,7 +92,7 @@ namespace MaybeSharp {
         // method that works like unwrap() in Rust language
         public static T Unwrap_panic<T>(this Maybe<T> maybe)
         {
-            return maybe.Match(
+            return maybe.Match<T>(
                 some: value => value,
                 none: () => { 
                     Environment.Exit(1);
@@ -137,7 +139,7 @@ namespace MaybeSharp {
         // method that works similiar to unwrap() in Rust Language, but instead of crashing program, it returns empty value
         public static T Unwrap<T, Err>(this MaybeErr<T, Err> maybe)
         {
-            return maybe.Match(
+            return maybe.Match<T>(
                 ok: value => value,
                 err: error => default(T)
             );
@@ -146,7 +148,7 @@ namespace MaybeSharp {
         // method that works similiar to unwrap_or() in Rust language
         public static T Unwrap_or<T, Err>(this MaybeErr<T, Err> maybe, T defaultValue)
         {
-            return maybe.Match(
+            return maybe.Match<T>(
                 ok: value => value,
                 err: error => defaultValue
             );
@@ -155,7 +157,7 @@ namespace MaybeSharp {
         // method that works like unwrap() in Rust language.
         public static T Unwrap_panic<T, Err>(this MaybeErr<T, Err> maybe)
         {
-            return maybe.Match(
+            return maybe.Match<T>(
                 ok: value => value,
                 err: error =>
                 {
@@ -165,5 +167,13 @@ namespace MaybeSharp {
                 }
             );
         }
+    }
+
+    // Unit like () [Unit] in Haskell
+    public struct Unit
+    {
+        public static Unit Value { get; } = new Unit();
+
+        private Unit(bool _) {}
     }
 }
